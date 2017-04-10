@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 /// Extension to NSManagedObjectContext for a typed FetchRequest
-extension NSManagedObjectContext {
+public extension NSManagedObjectContext {
     
     func typedFetchRequest<T: NSManagedObject>(_ request: NSFetchRequest<T>) -> [T] {
         return try! self.fetch(request) 
@@ -24,7 +24,7 @@ extension NSManagedObjectContext {
 
 
 /// Extensions to NSManagedObjectContext providing observables for change and save notifications
-extension NSManagedObjectContext {
+public extension NSManagedObjectContext {
     
     /// Returns an observable for the NSManagedObjectContextObjectsDidChangeNotification in the current context
     public func rx_objectsDidChange() -> Observable<RxManagedObjectContextNotification> {

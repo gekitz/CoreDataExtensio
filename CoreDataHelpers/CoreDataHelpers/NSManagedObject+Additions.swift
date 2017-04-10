@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-extension NSManagedObject {
+public extension NSManagedObject {
     
     /**
         Returns the entity's name

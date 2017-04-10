@@ -12,7 +12,7 @@ import RxSwift
 
 /// Protocol for Fetching data from CoreData Contexts
 
-protocol Fetchable {
+public protocol Fetchable {
     associatedtype FetchableType: NSManagedObject
     associatedtype I: Any
     
@@ -29,15 +29,15 @@ protocol Fetchable {
 
 
 /// Default Imp
-extension Fetchable where Self : NSManagedObject, FetchableType == Self {
+public extension Fetchable where Self : NSManagedObject, FetchableType == Self {
     
-    static func objectWithIds(_ ids:[I], context: NSManagedObjectContext) -> [FetchableType] {
+    public static func objectWithIds(_ ids:[I], context: NSManagedObjectContext) -> [FetchableType] {
         
         let p = NSPredicate(format: "%K IN %@", idName(), ids)
         return allObjects(matchingPredicate: p, context: context)
     }
     
-    static func allObjects(matchingPredicate predicate: NSPredicate? = nil, sorted: [NSSortDescriptor]? = nil, fetchLimit: Int? = nil, context: NSManagedObjectContext) -> [FetchableType] {
+    public static func allObjects(matchingPredicate predicate: NSPredicate? = nil, sorted: [NSSortDescriptor]? = nil, fetchLimit: Int? = nil, context: NSManagedObjectContext) -> [FetchableType] {
         
         let r: NSFetchRequest<FetchableType> = NSFetchRequest(entityName: entityName())
         r.predicate = predicate
@@ -50,11 +50,11 @@ extension Fetchable where Self : NSManagedObject, FetchableType == Self {
         return context.typedFetchRequest(r)
     }
     
-    static func allObjectsCount(matchingPredicate predicate: NSPredicate? = nil, context: NSManagedObjectContext) -> Int {
+    public static func allObjectsCount(matchingPredicate predicate: NSPredicate? = nil, context: NSManagedObjectContext) -> Int {
         return allObjects(matchingPredicate: predicate, context: context).count
     }
     
-    static func rxAllObjects(matchingPredicate predicate: NSPredicate? = nil, sorted: [NSSortDescriptor]? = nil, fetchLimit: Int? = nil, context: NSManagedObjectContext) -> Observable<[FetchableType]> {
+    public static func rxAllObjects(matchingPredicate predicate: NSPredicate? = nil, sorted: [NSSortDescriptor]? = nil, fetchLimit: Int? = nil, context: NSManagedObjectContext) -> Observable<[FetchableType]> {
         
         return Observable.create({ (observer) -> Disposable in
             
@@ -75,7 +75,7 @@ extension Fetchable where Self : NSManagedObject, FetchableType == Self {
         })
     }
     
-    static func rxMonitorChanges(_ context: NSManagedObjectContext) -> Observable<(inserted:[FetchableType], updated:[FetchableType], deleted: [FetchableType])> {
+    public static func rxMonitorChanges(_ context: NSManagedObjectContext) -> Observable<(inserted:[FetchableType], updated:[FetchableType], deleted: [FetchableType])> {
         return context.rx_objectsDidChange()
             .filter { (notification) -> Bool in
                 
