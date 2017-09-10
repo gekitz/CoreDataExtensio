@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   s.frameworks = 'CoreData'
   s.module_name = 'CoreDataHelpers'
 
-  s.dependency 'RxSwift', '~>3.0.0'
-  s.dependency 'RxCocoa', '~> 3.0.0'
-  s.dependency 'RxOptional', '~> 3.1.3'
+  s.dependency 'RxSwift', '~> 4.0.0-alpha.1'
+  s.dependency 'RxCocoa', '~> 4.0.0-alpha.1'
+  s.dependency 'RxOptional', '~> 3.2.0'
 end
