@@ -15,7 +15,7 @@ public extension NSManagedObject {
         Returns the entity's name
      */
     class func entityName() -> String {
-        let fullClassName = NSStringFromClass(object_getClass(self))
+        let fullClassName = NSStringFromClass(object_getClass(self)!)
         let nameComponents = fullClassName.components(separatedBy: ".")
         return nameComponents.last!
     }
