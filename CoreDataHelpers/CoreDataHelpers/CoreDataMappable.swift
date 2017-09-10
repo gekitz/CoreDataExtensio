@@ -69,7 +69,7 @@ extension NSPropertyDescription {
     var jsonTransformer: ValueTransformer? {
         if let userInfo = userInfo, let value = userInfo[PropertyKeys.transformerClass] as? String {
             
-            let app = NSStringFromClass(AppDelegate.self).components(separatedBy: ".").first!
+            let app = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
             let className = "\(app).\(value)"
             let aClass = NSClassFromString(className) as! ValueTransformer.Type
             return aClass.init()
