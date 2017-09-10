@@ -106,7 +106,7 @@ extension NSManagedObject {
      - parameter JSON: the JSON we want to use for the update
      - parameter context: the managed context we want this changes to happen in
      */
-    func updateFromJSON(_ JSON: JSONDictionary, context: NSManagedObjectContext) {
+    public func updateFromJSON(_ JSON: JSONDictionary, context: NSManagedObjectContext) {
         
         var ignoreProperties = false
         if let updatedValue = JSON["updated"] as? String, let jsonUpdatedTimestamp = StringToISO8601DateTransfomer().typedTransformedValue(updatedValue), let entityUpdatedTimestamp = value(forKey: "updatedTimestamp") as? Date, jsonUpdatedTimestamp.timeIntervalSince1970 == entityUpdatedTimestamp.timeIntervalSince1970 {
@@ -128,7 +128,7 @@ extension NSManagedObject {
      - parameter context: the context we want this to happen
      - returns: the managed object we were looking for
      */
-    class func loadOrInsertEntity(_ key: String, value: AnyObject, entityDescription: NSEntityDescription, context: NSManagedObjectContext) -> Self {
+    public class func loadOrInsertEntity(_ key: String, value: AnyObject, entityDescription: NSEntityDescription, context: NSManagedObjectContext) -> Self {
         
         /**
          Found this internal hack here http://stackoverflow.com/questions/25271208/cast-to-typeofself
@@ -162,7 +162,7 @@ extension NSManagedObject {
     /**
      Convenience method for the other `loadOrInsertEntity(...)` method
      */
-    class func loadOrInsertEntity(_ key: String, value: AnyObject, context: NSManagedObjectContext) -> Self {
+    public class func loadOrInsertEntity(_ key: String, value: AnyObject, context: NSManagedObjectContext) -> Self {
         return loadOrInsertEntity(key, value: value, entityDescription: entityDescription(context), context: context)
     }
     
