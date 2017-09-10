@@ -16,6 +16,7 @@
 		C13066EF1E9BBD3A008770C2 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13066EC1E9BBD3A008770C2 /* Fetchable.swift */; };
 		C13066F01E9BBD3A008770C2 /* NSManagedObject+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13066ED1E9BBD3A008770C2 /* NSManagedObject+Additions.swift */; };
 		C13066F11E9BBD3A008770C2 /* NSManagedObjectContext+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13066EE1E9BBD3A008770C2 /* NSManagedObjectContext+Additions.swift */; };
+		C18966701F6561FF0001FB5B /* CoreDataMappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C189666F1F6561FF0001FB5B /* CoreDataMappable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		C13066EC1E9BBD3A008770C2 /* Fetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
 		C13066ED1E9BBD3A008770C2 /* NSManagedObject+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObject+Additions.swift"; sourceTree = "<group>"; };
 		C13066EE1E9BBD3A008770C2 /* NSManagedObjectContext+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Additions.swift"; sourceTree = "<group>"; };
+		C189666F1F6561FF0001FB5B /* CoreDataMappable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMappable.swift; sourceTree = "<group>"; };
 		C7E38624B7ACEF5F6F7C7A1B /* Pods_CoreDataHelpers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CoreDataHelpers.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBE9244437E9A90460407955 /* Pods-CoreDataHelpers.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreDataHelpers.release.xcconfig"; path = "Pods/Target Support Files/Pods-CoreDataHelpers/Pods-CoreDataHelpers.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -101,6 +103,7 @@
 				C13066EC1E9BBD3A008770C2 /* Fetchable.swift */,
 				C13066ED1E9BBD3A008770C2 /* NSManagedObject+Additions.swift */,
 				C13066EE1E9BBD3A008770C2 /* NSManagedObjectContext+Additions.swift */,
+				C189666F1F6561FF0001FB5B /* CoreDataMappable.swift */,
 			);
 			path = CoreDataHelpers;
 			sourceTree = "<group>";
@@ -229,6 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C18966701F6561FF0001FB5B /* CoreDataMappable.swift in Sources */,
 				C13066EF1E9BBD3A008770C2 /* Fetchable.swift in Sources */,
 				C13066F01E9BBD3A008770C2 /* NSManagedObject+Additions.swift in Sources */,
 				C13066D61E9BB9AA008770C2 /* ViewController.swift in Sources */,
