@@ -18,6 +18,7 @@ struct PropertyKeys {
 struct RelationKeys {
     static let relatedObjectDatabaseUniqueIdentifier = "map.o.id"
     static let relatedObjectJsonUniqueIdentifier = "map.j.id"
+    static let relatedObjectSetByDeletingPrevRelations = "map.del.prev.rel"
 }
 
 
@@ -96,6 +97,14 @@ extension NSRelationshipDescription {
         
         return relatedObjectDatabaseUIDKey
     }
+    
+    var shouldSetRelationByDeletingPrevSetRelationalObjects: Bool {
+        if let userInfo = userInfo, let value = userInfo[RelationKeys.relatedObjectSetByDeletingPrevRelations] as? String, value == "1" {
+            return true
+        }
+        
+        return false
+    }
 }
 
 // MARK: - Extensions to NSManageObject
@@ -158,6 +167,27 @@ extension NSManagedObject {
         return _loadOrInsertEntity(key, value: value, entityDescription: entityDescription, context: context)
     }
     
+    /**
+     Allows us to insert an object with a given description in a given context
+     */
+    public class func insertEntity(entityDescription: NSEntityDescription, context: NSManagedObjectContext) -> Self {
+        
+        func _insertEntity<T>(entityDescription: NSEntityDescription, context: NSManagedObjectContext) -> T where T: NSManagedObject {
+            
+            let entity = (NSManagedObject(entity: entityDescription, insertInto: context) as! T)
+            if (entityDescription.propertiesByName.keys.contains("createdTimestamp")) {
+                entity.setValue(Date(), forKey: "createdTimestamp")
+            }
+            
+            if (entityDescription.propertiesByName.keys.contains("updatedTimestamp")) {
+                entity.setValue(Date(), forKey: "updatedTimestamp")
+            }
+            
+            return entity
+        }
+        
+        return _insertEntity(entityDescription: entityDescription, context: context)
+    }
     
     /**
      Convenience method for the other `loadOrInsertEntity(...)` method
@@ -218,6 +248,7 @@ extension NSManagedObject {
             let databaseObjectKey = relationship.relatedObjectDatabaseUIDKey
             let jsonObjectKey = relationship.relatedObjectJsonUIDKey
             let entityDescription = relationship.destinationEntity!
+            let shouldSetObjectsByDeletingPrevRelation = relationship.shouldSetRelationByDeletingPrevSetRelationalObjects
             
             if relationship.isToMany {
                 
@@ -226,8 +257,16 @@ extension NSManagedObject {
                     var set: Set<NSManagedObject> = Set()
                     
                     for entityJSON in arrayJSON {
-                        if let entity = updateRelationShipEntity(entityJSON, jsonObjectKey: jsonObjectKey, databaseObjectKey: databaseObjectKey, entityDesription: entityDescription, context: context) {
+                        if shouldSetObjectsByDeletingPrevRelation {
+                            //we don't update, we delete existing and insert new
+                            deleteValuesFor(key: name, in: context)
+                            let entity = insertRelationShipEntityAndUpdate(entityJSON, entityDescription: entityDescription, context: context)
+                            
                             set.insert(entity)
+                        } else {
+                            if let entity = updateRelationShipEntity(entityJSON, jsonObjectKey: jsonObjectKey, databaseObjectKey: databaseObjectKey, entityDesription: entityDescription, context: context) {
+                                set.insert(entity)
+                            }
                         }
                     }
                     
@@ -279,6 +318,31 @@ extension NSManagedObject {
         }
         
         return nil
+    }
+    
+    /**
+     inserts a new entity with the given description and updates it with the given entity json
+     - parameter entityJSON: the json we want to use to update the object
+     - parameter entityDescription: the desc to create the object in the first place
+     - parameter context: the context we are inserting it to
+     */
+    fileprivate func insertRelationShipEntityAndUpdate(_ entityJSON: JSONDictionary, entityDescription: NSEntityDescription, context: NSManagedObjectContext) -> NSManagedObject {
+        let entity = NSManagedObject.insertEntity(entityDescription: entityDescription, context: context)
+        entity.updateFromJSON(entityJSON, context: context)
+        return entity
+    }
+    
+    /**
+     deletes all values in a given relationship set
+     - parameter key: the key for the set on the object
+     - parameter context: the context we are inserting it to
+     */
+    fileprivate func deleteValuesFor(key: String, in context: NSManagedObjectContext) {
+        if let values = value(forKey: key) as? Set<NSManagedObject> {
+            values.forEach({ (item) in
+                context.delete(item)
+            })
+        }
     }
 }
 
@@ -357,3 +421,4 @@ open class StringToDecimalNumberTransformer: ValueTransformer {
         return formatter.number(from: value) ?? NSDecimalNumber()
     }
 }
+
