@@ -88,9 +88,9 @@ public extension Fetchable where Self : NSManagedObject, FetchableType == Self {
             }
             .map { (notification) -> (inserted:[FetchableType], updated:[FetchableType], deleted: [FetchableType]) in
                 
-                let inserted = notification.insertedObjects.filter { $0 is FetchableType } as! [Self]
-                let deleted = notification.deletedObjects.filter { $0 is FetchableType } as! [Self]
-                let updated = notification.updatedObjects.filter { $0 is FetchableType } as! [Self]
+                let inserted = Array(notification.insertedObjects.filter { $0 is FetchableType } as! Set<Self>)
+                let deleted = Array(notification.deletedObjects.filter { $0 is FetchableType } as! Set<Self>)
+                let updated = Array(notification.updatedObjects.filter { $0 is FetchableType } as! Set<Self>)
                 
                 return (inserted: inserted, updated: updated, deleted: deleted)
             }
@@ -134,9 +134,9 @@ private final class FetchRequestContainer<T: NSManagedObject> {
 //                print(notification.updatedObjects.first!.changedValues())
 //            }
             
-            let inserted = notification.insertedObjects.filter { $0.entity.name == entityName } as! [T]
-            let updated = notification.updatedObjects.filter { $0.entity.name == entityName } as! [T]
-            let deleted = notification.deletedObjects.filter { $0.entity.name == entityName } as! [T]
+            let inserted = Array(notification.insertedObjects.filter { $0.entity.name == entityName } as! Set<T>)
+            let updated = Array(notification.updatedObjects.filter { $0.entity.name == entityName } as! Set<T>)
+            let deleted = Array(notification.deletedObjects.filter { $0.entity.name == entityName } as! Set<T>)
             
             return (inserted, updated, deleted)
             
