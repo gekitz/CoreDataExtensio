@@ -7,13 +7,13 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = "CoreDataHelpers"
+  s.name             = "CoreDataRxExtensio"
   s.version          = "1.0.1"
-  s.summary          = "Database Helpers used by @gekitz"
+  s.summary          = "CoreData Helpers used by @gekitz"
   s.license          = "Code is MIT, then custom font licenses."
   s.author           = { "Georg Kitz" => "georg.kitz@deliveryhero.com" }
-  s.source           = { :git => "git@github.com:9cookies/ios-coredata-helpers.git", :tag => s.version }
-  s.homepage         = "http://www.9cookies.com"
+  s.source           = { :git => "git@github.com:gekitz/CoreDataExtensio.git", :tag => s.version }
+  s.homepage         = "http://www.georgkitz.com"
 
   s.platform     = :ios, '8.0'
   s.requires_arc = true
@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   s.frameworks = 'CoreData'
   s.module_name = 'CoreDataHelpers'
 
-  s.dependency 'RxSwift', '~> 4.0.0-alpha.1'
-  s.dependency 'RxCocoa', '~> 4.0.0-alpha.1'
-  s.dependency 'RxOptional', '~> 3.2.0'
+  s.dependency 'RxSwift', '~> 4.0'
+  s.dependency 'RxCocoa', '~> 4.0'
+  s.dependency 'RxOptional', '~> 3.3'
 end
