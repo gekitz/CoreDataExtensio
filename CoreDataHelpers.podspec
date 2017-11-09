@@ -7,8 +7,8 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = "CoreDataRxExtensio"
-  s.version          = "1.0.2"
+  s.name             = "CoreDataHelpers"
+  s.version          = "1.0.3"
   s.summary          = "CoreData Helpers used by @gekitz"
   s.license          = "Code is MIT, then custom font licenses."
   s.author           = { "Georg Kitz" => "georg.kitz@deliveryhero.com" }

@@ -169,7 +169,7 @@ private final class FetchRequestContainer<T: NSManagedObject> {
                 
                 self?.performFetch()
                 
-            }.subscribe().disposed(by: b)
+            }.subscribe().disposed(by: bag!)
     }
     
     func dispose() {
