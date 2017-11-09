@@ -6,8 +6,8 @@ target 'CoreDataHelpers' do
   use_frameworks!
 
   # Pods for CoreDataHelpers
-  pod 'RxSwift', '4.0.0-alpha.1'
-  pod 'RxCocoa', '4.0.0-alpha.1'
-  pod 'RxOptional', '~> 3.2.0'
+  pod 'RxSwift', '~> 4.0'
+  pod 'RxCocoa', '~> 4.0'
+  pod 'RxOptional', '~> 3.3'
   
 end
