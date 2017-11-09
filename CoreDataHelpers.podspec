@@ -8,10 +8,10 @@
 
 Pod::Spec.new do |s|
   s.name             = "CoreDataHelpers"
-  s.version          = "1.0.3"
+  s.version          = "1.0.4"
   s.summary          = "CoreData Helpers used by @gekitz"
   s.license          = "Code is MIT, then custom font licenses."
-  s.author           = { "Georg Kitz" => "georg.kitz@deliveryhero.com" }
+  s.author           = { "Georg Kitz" => "georgkitz@gmail.com" }
   s.source           = { :git => "git@github.com:gekitz/CoreDataExtensio.git", :tag => s.version }
   s.homepage         = "http://www.georgkitz.com"
 
