@@ -309,7 +309,7 @@ extension NSManagedObject {
      */
     fileprivate func updateRelationShipEntity(_ entityJSON: JSONDictionary, jsonObjectKey: String, databaseObjectKey: String, entityDesription: NSEntityDescription, context: NSManagedObjectContext) -> NSManagedObject? {
         
-        if let uniqueValue = entityJSON[jsonObjectKey], jsonObjectKey.characters.count > 0 {
+        if let uniqueValue = entityJSON[jsonObjectKey], jsonObjectKey.count > 0 {
             
             let entity = NSManagedObject.loadOrInsertEntity(databaseObjectKey, value: uniqueValue, entityDescription: entityDesription, context: context)
             entity.updateFromJSON(entityJSON, context: context)
