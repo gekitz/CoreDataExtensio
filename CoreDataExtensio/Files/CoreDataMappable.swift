@@ -35,8 +35,8 @@ extension String {
 }
 
 // MARK: - JSON Value extraction which supports key paths
-public typealias JSONDictionary = [String: AnyObject]
-public func jsonValueForKey(_ key: String, fromJSON JSON: JSONDictionary) -> AnyObject? {
+public typealias JSONDictionary = [String: Any]
+public func jsonValueForKey(_ key: String, fromJSON JSON: JSONDictionary) -> Any? {
     if !key.isKeyPath {
         return JSON[key]
     }
@@ -137,12 +137,12 @@ extension NSManagedObject {
      - parameter context: the context we want this to happen
      - returns: the managed object we were looking for
      */
-    public class func loadOrInsertEntity(_ key: String, value: AnyObject, entityDescription: NSEntityDescription, context: NSManagedObjectContext) -> Self {
+    public class func loadOrInsertEntity(_ key: String, value: Any, entityDescription: NSEntityDescription, context: NSManagedObjectContext) -> Self {
         
         /**
          Found this internal hack here http://stackoverflow.com/questions/25271208/cast-to-typeofself
          */
-        func _loadOrInsertEntity<T> (_ key: String, value: AnyObject, entityDescription: NSEntityDescription, context: NSManagedObjectContext) -> T where T: NSManagedObject {
+        func _loadOrInsertEntity<T> (_ key: String, value: Any, entityDescription: NSEntityDescription, context: NSManagedObjectContext) -> T where T: NSManagedObject {
             
             let request: NSFetchRequest<T> = NSFetchRequest(entityName: entityDescription.name!)
             request.predicate = NSPredicate(format: "%K = %@", key, value as! NSObject)
@@ -192,7 +192,7 @@ extension NSManagedObject {
     /**
      Convenience method for the other `loadOrInsertEntity(...)` method
      */
-    public class func loadOrInsertEntity(_ key: String, value: AnyObject, context: NSManagedObjectContext) -> Self {
+    public class func loadOrInsertEntity(_ key: String, value: Any, context: NSManagedObjectContext) -> Self {
         return loadOrInsertEntity(key, value: value, entityDescription: entityDescription(context), context: context)
     }
     
@@ -225,7 +225,7 @@ extension NSManagedObject {
                 /// if we have a transformer, transform the value
                 if let transformer = transformer {
                     
-                    value = transformer.transformedValue(jsonValue)! as AnyObject
+                    value = transformer.transformedValue(jsonValue)! as Any
                 }
                 
                 /// finally set the value
