@@ -32,6 +32,14 @@ extension String {
     var keyPathElements: [String] {
         return self.components(separatedBy: ".")
     }
+    
+    func snakeCased() -> String? {
+        let pattern = "([a-z0-9])([A-Z])"
+        
+        let regex = try? NSRegularExpression(pattern: pattern, options: [])
+        let range = NSRange(location: 0, length: self.characters.count)
+        return regex?.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "$1_$2").lowercased()
+    }
 }
 
 // MARK: - JSON Value extraction which supports key paths
@@ -64,14 +72,12 @@ extension NSPropertyDescription {
         if let userInfo = userInfo, let value = userInfo[PropertyKeys.jsonKey] as? String {
             return value
         }
-        return name
+        return name.snakeCased() ?? name
     }
     
     var jsonTransformer: ValueTransformer? {
         if let userInfo = userInfo, let value = userInfo[PropertyKeys.transformerClass] as? String {
-            
-            let app = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
-            let className = "\(app).\(value)"
+            let className = "CoreDataExtensio.\(value)"
             let aClass = NSClassFromString(className) as! ValueTransformer.Type
             return aClass.init()
         }
