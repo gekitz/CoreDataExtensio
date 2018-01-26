@@ -61,13 +61,12 @@ public extension Fetchable where Self : NSManagedObject, FetchableType == Self {
             let r: NSFetchRequest<FetchableType> = NSFetchRequest(entityName: entityName())
             r.predicate = predicate
             r.sortDescriptors = sorted ?? defaultSortDescriptor()
-
+            
             if let fetchLimit = fetchLimit {
                 r.fetchLimit = fetchLimit
             }
             
             let container = FetchRequestContainer<FetchableType>(fetchRequest: r, context: context, observer: observer)
-            container.startUpdating()
             
             return Disposables.create {
                 container.dispose()
@@ -93,15 +92,16 @@ public extension Fetchable where Self : NSManagedObject, FetchableType == Self {
                 let updated = Array(notification.updatedObjects.filter { $0 is FetchableType } as! Set<Self>)
                 
                 return (inserted: inserted, updated: updated, deleted: deleted)
-            }
+        }
     }
 }
 
-private final class FetchRequestContainer<T: NSManagedObject> {
+private final class FetchRequestContainer<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
     
     fileprivate var bag: DisposeBag? = DisposeBag()
     fileprivate var currentValues:[T] = []
     fileprivate var fetchRequest: NSFetchRequest<T>
+    fileprivate var fetchedResultsController: NSFetchedResultsController<T>
     
     fileprivate let context: NSManagedObjectContext
     fileprivate let observer: AnyObserver<[T]>
@@ -109,75 +109,32 @@ private final class FetchRequestContainer<T: NSManagedObject> {
     init(fetchRequest: NSFetchRequest<T>, context: NSManagedObjectContext, observer: AnyObserver<[T]>) {
         
         self.fetchRequest = fetchRequest
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        
         self.context = context
         self.observer = observer
         
+        super.init()
+        
+        fetchedResultsController.delegate = self
         performFetch()
     }
     
-    func startUpdating() {
-        
-        self.context.rx_didSave().map { [weak self](notification) -> ([T], [T], [T]) in
-            
-            guard let entityName = self?.fetchRequest.entityName else {
-                print("No Entity Name")
-                return ([], [], [])
-            }
-            
-//            if (notification.deletedObjects.count > 0) {
-//                print(notification.deletedObjects)
-//                print(notification.deletedObjects.first!.changedValues())
-//            }
-//            
-//            if (notification.updatedObjects.count > 0) {
-//                print(notification.updatedObjects)
-//                print(notification.updatedObjects.first!.changedValues())
-//            }
-            
-            let inserted = Array(notification.insertedObjects.filter { $0.entity.name == entityName } as! Set<T>)
-            let updated = Array(notification.updatedObjects.filter { $0.entity.name == entityName } as! Set<T>)
-            let deleted = Array(notification.deletedObjects.filter { $0.entity.name == entityName } as! Set<T>)
-            
-            return (inserted, updated, deleted)
-            
-            }.filter { [weak self](notification) -> Bool in
-                
-                if notification.0.count == 0 && notification.1.count == 0 && notification.2.count == 0 {
-                    return false
-                }
-                
-                guard let predicate = self?.fetchRequest.predicate, let currentValues = self?.currentValues else {
-                    return true
-                }
-                
-                let inserted = notification.0.filter { predicate.evaluate(with: $0) }.count > 0
-                let updated = notification.1.filter { notificationObject in
-                    
-                    //either the updated objet evaluates positively against the predicate
-                    //or the object doesn't evaluate but is currently in the currentValues list
-                    return predicate.evaluate(with: notificationObject) || currentValues.filter{ notificationObject == $0}.count > 0
-                }.count > 0
-                print(updated)
-                
-                let deleted = currentValues.filter({ (currentValue) -> Bool in
-                    return notification.2.filter { currentValue == $0 }.count > 0
-                }).count > 0
-                
-                return inserted || updated || deleted
-                
-            }.map { [weak self](_) -> Void in
-                
-                self?.performFetch()
-                
-            }.subscribe().disposed(by: bag!)
-    }
-    
     func dispose() {
+        fetchedResultsController.delegate = nil
         bag = nil
     }
     
     fileprivate func performFetch() {
-        currentValues = context.typedFetchRequest(fetchRequest)
-        observer.onNext(currentValues)
+        
+        try? fetchedResultsController.performFetch()
+        let objects = fetchedResultsController.fetchedObjects ?? []
+        observer.onNext(objects)
+    }
+    
+    @objc func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        let objects = fetchedResultsController.fetchedObjects ?? []
+        observer.onNext(objects)
     }
 }
+
