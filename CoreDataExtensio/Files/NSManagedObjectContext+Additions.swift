@@ -27,21 +27,21 @@ public extension NSManagedObjectContext {
 public extension NSManagedObjectContext {
     
     /// Returns an observable for the NSManagedObjectContextObjectsDidChangeNotification in the current context
-    public func rx_objectsDidChange() -> Observable<RxManagedObjectContextNotification> {
+    func rx_objectsDidChange() -> Observable<RxManagedObjectContextNotification> {
         return NotificationCenter.default.rx.notification(NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: self).map {
             return RxManagedObjectContextNotification(notification: $0)
         }
     }
     
     /// Returns an observable for the NSManagedObjectContextWillSaveNotification in the current context
-    public func rx_willSave() -> Observable<NSManagedObjectContext> {
+    func rx_willSave() -> Observable<NSManagedObjectContext> {
         return NotificationCenter.default.rx.notification(NSNotification.Name.NSManagedObjectContextWillSave, object: self).map {
             return $0.object as! NSManagedObjectContext
         }
     }
     
     /// Returns an observable for the NSManagedObjectContextDidSaveNotification in the current context
-    public func rx_didSave() -> Observable<RxManagedObjectContextNotification> {
+    func rx_didSave() -> Observable<RxManagedObjectContextNotification> {
         return NotificationCenter.default.rx.notification(NSNotification.Name.NSManagedObjectContextDidSave, object: self).map {
             return RxManagedObjectContextNotification(notification: $0)
         }
@@ -49,10 +49,10 @@ public extension NSManagedObjectContext {
 }
 
 open class RxManagedObjectContextNotification {
-    open let managedObjectContext:NSManagedObjectContext
-    open let insertedObjects:Set<NSManagedObject>
-    open let updatedObjects:Set<NSManagedObject>
-    open let deletedObjects:Set<NSManagedObject>
+    public let managedObjectContext:NSManagedObjectContext
+    public let insertedObjects:Set<NSManagedObject>
+    public let updatedObjects:Set<NSManagedObject>
+    public let deletedObjects:Set<NSManagedObject>
     
     init(notification: Notification) {
         managedObjectContext = notification.object as! NSManagedObjectContext
