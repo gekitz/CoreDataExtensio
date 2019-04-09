@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-protocol Createable {
+public protocol Createable {
     associatedtype CreatedType: NSManagedObject
     static func create(in context: NSManagedObjectContext) -> CreatedType
 }
