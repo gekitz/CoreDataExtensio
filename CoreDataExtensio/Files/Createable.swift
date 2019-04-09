@@ -3,7 +3,7 @@
 //  CoreDataExtensio
 //
 //  Created by Georg Kitz on 09.04.19.
-//  Copyright © 2019 Georg Kitz. All rights reserved.
+//  Copyright © 2019 meisterwork GmbH. All rights reserved.
 //
 
 import Foundation

@@ -3,7 +3,7 @@
 //  meisterwork
 //
 //  Created by Georg Kitz on 12/02/16.
-//  Copyright © 2016 9Cookies GmbH. All rights reserved.
+//  Copyright © 2019 meisterwork GmbH. All rights reserved.
 //
 
 import Foundation

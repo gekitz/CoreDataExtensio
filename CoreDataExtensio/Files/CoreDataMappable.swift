@@ -3,7 +3,7 @@
 //  CoreDataHelpers
 //
 //  Created by Georg Kitz on 10/09/2017.
-//  Copyright © 2017 9Cookies Gmbh. All rights reserved.
+//  Copyright © 2019 meisterwork GmbH. All rights reserved.
 //
 
 import Foundation
