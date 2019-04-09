@@ -6,6 +6,7 @@ Pod::Spec.new do |s|
     s.author           = { "Georg Kitz" => "georgkitz@gmail.com" }
     s.source           = { :git => "https://github.com/gekitz/CoreDataExtensio", :tag => s.version }
     s.homepage         = "http://www.georgkitz.com"
+    s.swift_version    = '5.0'
   
     s.platform     = :ios, '11.1'
     s.requires_arc = true
