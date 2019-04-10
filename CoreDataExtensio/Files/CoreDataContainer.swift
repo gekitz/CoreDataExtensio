@@ -13,7 +13,6 @@ import CoreData
 /// The CoreDataContainer wraps the handling and creation of the NSPersistentContainer
 /// coredata stack. Implemented as Singleton.
 public class CoreDataContainer: NSObject {
-    
     /// Singleton Methods
     
     private struct Static {
@@ -29,10 +28,30 @@ public class CoreDataContainer: NSObject {
         }
     }
     
-    public class func create(modelURL: URL, storeURL: URL, storeType: String, name: String, options: CoreDataContainerStoreOptions) {
-        instance = CoreDataContainer(modelURL: modelURL, storeURL: storeURL, storeType: storeType, name: name, options: options)
+    public private(set) var isStoreLoaded: Bool = false
+    
+    /// The class method create will try to create and load the core data store.
+    ///
+    /// - Parameters:
+    ///   - name: the name of the NSPersistentContainer
+    ///   - modelURL: path to the model file
+    ///   - description: the description of the persistent container.
+    public class func create(name: String, modelURL: URL, description: NSPersistentStoreDescription, completionHandler block: ((NSPersistentStoreDescription, Error?) -> Void)?) {
+        instance = CoreDataContainer(name: name, modelURL: modelURL, description: description)
+        instance?.container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if error == nil {
+                instance?.isStoreLoaded = true
+                instance?.mainContext.stalenessInterval = 0
+            }
+            if let block = block {
+                block(storeDescription, error);
+            }
+        })
     }
     
+    /// Destroy the singleton.
+    ///
+    /// - Throws: throws an error if the class method is not able to destroy the data store.
     public class func destroy() throws {
         try instance?.destroy()
         instance = nil
@@ -49,22 +68,22 @@ public class CoreDataContainer: NSObject {
     /// Intialises a new CoreDataContainer
     ///
     /// - Parameters:
+    ///   - name: the name of the NSPersistentContainer
     ///   - modelURL: path to the model file
-    ///   - storeURL: path to the storage file
-    ///   - storeType: type of storage we want to use
-    ///   - name: filename of the file we want to store the data at
-    ///   - options: different options
-    init?(modelURL: URL, storeURL: URL, storeType: String, name: String, options: CoreDataContainerStoreOptions) {
-        let description = NSPersistentStoreDescription(url: storeURL)
-        description.type = storeType
-        for (key, value) in options.optionsDictionary() {
-            description.setOption(value, forKey: key)
-        }
-        // let name = storeURL.
-        if let model = NSManagedObjectModel(contentsOf: modelURL) {
-            container = NSPersistentContainer(name: name, managedObjectModel: model)
-            container.viewContext.stalenessInterval = 0
+    ///   - description: the description of the persistent container.
+    init?(name: String, modelURL: URL?, description: NSPersistentStoreDescription) {
+        // try to load the model
+        var model: NSManagedObjectModel?
+        if let modelURL = modelURL {
+            model = NSManagedObjectModel(contentsOf: modelURL)
         } else {
+            model = NSManagedObjectModel.mergedModel(from: nil)
+        }
+        
+        if let model = model {
+            container = NSPersistentContainer(name: name, managedObjectModel: model)
+        } else {
+            print("failed to load the NSManagedObjectModel")
             return nil
         }
         super.init()
@@ -77,6 +96,8 @@ public class CoreDataContainer: NSObject {
     }
     
     /// Creates a background worker context
+    ///
+    /// - Returns: a new background NSManagedObjectContext
     public func newBackgroundContext() -> NSManagedObjectContext {
         return container.newBackgroundContext()
     }
@@ -129,22 +150,5 @@ public class CoreDataContainer: NSObject {
                 }
             }
         }
-    }
-}
-
-public struct CoreDataContainerStoreOptions {
-    let migrateAutomatically: Bool
-    let inferMappingModelAutomatically: Bool
-    
-    public init(migrateAutomatically: Bool = true, inferMappingModelAutomatically: Bool = true) {
-        self.migrateAutomatically = migrateAutomatically
-        self.inferMappingModelAutomatically = inferMappingModelAutomatically
-    }
-    
-    public func optionsDictionary() -> [String: NSObject] {
-        return [
-            NSMigratePersistentStoresAutomaticallyOption: NSNumber(booleanLiteral: migrateAutomatically),
-            NSInferMappingModelAutomaticallyOption: NSNumber(booleanLiteral: inferMappingModelAutomatically),
-        ]
     }
 }
