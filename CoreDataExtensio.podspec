@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
     s.frameworks = 'CoreData'
     s.module_name = 'CoreDataExtensio'
   
-    s.dependency 'RxSwift', '~>4.5.0'
-    s.dependency 'RxCocoa', '~> 4.5.0'
-    s.dependency 'RxOptional', '~> 3.6.2'
+    s.dependency 'RxSwift', '~> 5.0.0'
+    s.dependency 'RxCocoa', '~> 5.0.0'
+    s.dependency 'RxOptional', '~> 4.0.0'
   end
