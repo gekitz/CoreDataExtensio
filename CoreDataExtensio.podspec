@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = "CoreDataExtensio"
-    s.version          = "2.0.5"
+    s.version          = "2.0.6"
     s.summary          = "Rx Extension for CoreData used by @gekitz"
     s.license          = "MIT"
     s.author           = { "Georg Kitz" => "georgkitz@gmail.com" }
