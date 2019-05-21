@@ -25,6 +25,7 @@ public protocol Fetchable {
     static func allObjectsCount(matchingPredicate predicate: NSPredicate?, context: NSManagedObjectContext) -> Int
     static func rxAllObjects(matchingPredicate predicate: NSPredicate?, sorted:[NSSortDescriptor]?, fetchLimit: Int?, context: NSManagedObjectContext) -> Observable<[FetchableType]>
     static func rxMonitorChanges(_ context: NSManagedObjectContext) -> Observable<(inserted:[FetchableType], updated:[FetchableType], deleted: [FetchableType])>
+    static func deleteAllObjects(in context: NSManagedObjectContext) -> Bool
 }
 
 public extension Fetchable where Self: NSManagedObject {
@@ -98,6 +99,19 @@ public extension Fetchable where Self : NSManagedObject, FetchableType == Self {
                 let updated = Array(notification.updatedObjects.filter { $0 is FetchableType } as! Set<Self>)
                 
                 return (inserted: inserted, updated: updated, deleted: deleted)
+        }
+    }
+    
+    static func deleteAllObjects(in context: NSManagedObjectContext) -> Bool {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName())
+        let batchRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try context.execute(batchRequest)
+            return true
+        } catch {
+            print("Couldn't delete item: \(error)")
+            return false
         }
     }
 }
